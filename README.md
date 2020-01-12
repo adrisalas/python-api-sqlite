@@ -23,12 +23,28 @@ docker run -p 4000:80 pythonapi
 
 ## Usage
 
-```python
-import foobar
-
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+Introducing new data
+```http
+http://localhost/nuevo/2
+http://localhost/nuevo/-5
+http://localhost/nuevo/2
+http://localhost/nuevo/4
+```
+Show real-time graph _[Chart.js](https://www.chartjs.org/)_
+```http
+http://localhost/grafico
+```
+Full list the API _JSON Format_
+```http
+http://localhost/listar
+```
+Query 10 last data _JSON Format_
+```http
+http://localhost/listajson
 ```
 
+
 ## Screenshots
+
+![image-20200112181809153](image-20200112181809153.png)
+
