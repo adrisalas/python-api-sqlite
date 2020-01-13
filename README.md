@@ -42,6 +42,10 @@ Query 10 last data _JSON Format_
 ```http
 http://localhost/listajson
 ```
+Shutdown
+```http
+http://localhost/nuevo/101
+```
 
 
 ## Screenshots

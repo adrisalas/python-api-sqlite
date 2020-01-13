@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 default_api_info = """<h1>API - Temperatures</h1>
     <p><strong>GET /nuevo/:data</strong> to add new data</p>
+    <p><strong>GET /nuevo/101</strong> to close the server</p>
     <p><strong>GET /listar</strong> to get all the temperature data</p>
     <p><strong>GET /grafica</strong> to get the graph</p>
     <p><strong>GET /listajson</strong> to get the last 10 temperature data</p>
@@ -18,7 +19,13 @@ def dict_factory(cursor, row):
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
-    
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
 @app.route('/', methods=['GET'])
 def home():
     return default_api_info
@@ -26,7 +33,7 @@ def home():
 @app.errorhandler(404)
 def page_not_found(e):
     return default_api_info
-
+    
 # A route to get all the temperature data
 @app.route('/listar', methods=['GET'])
 def api_list():
@@ -50,14 +57,27 @@ def api_ten():
     return jsonify(all_data)
 
 # A route to add new data
-@app.route('/nuevo/<data>', methods=['GET'])
+@app.route('/nuevo/<string:data>', methods=['GET'])
 def api_new(data):
+    try: 
+        data = int(data)
+    except ValueError:
+        return """<h1>API - Temperatures</h1>
+        <p>INCORRECT DATA</p>
+        """
+    
+    if (data==101):
+        shutdown_server()
+        return """<h1>API - Temperatures</h1>
+            <p>Server Down</p>
+            """
+
     conn = sqlite.connect('../data/adrisalas.db')
     conn.row_factory = dict_factory
     cur = conn.cursor()
-   
+    
     sql = "INSERT INTO temperatures ('data') VALUES ("
-    sql += data
+    sql += str(data)
     sql += ");"
     
     cur.execute(sql)
@@ -66,6 +86,7 @@ def api_new(data):
     return """<h1>API - Temperatures</h1>
     <p>Data inserted</p>
     """
+
 # A route to show a graph
 @app.route('/grafico' ,methods=['GET'])
 def api_graph():
