@@ -12,13 +12,14 @@ git clone https://github.com/adrisalas/python-sqlite-api.git
 cd ./api/
 pip install Flask
 pip install sqlite
+pip install requests
 python app.py
 ```
 ##### Option 2: In a Docker container
 ```bash
 git clone https://github.com/adrisalas/python-sqlite-api.git
 docker build -t pythonapi
-docker run -p 4000:80 pythonapi
+docker run -p 4000:80 python-api-sqlite
 ```
 
 ## Usage
@@ -42,9 +43,13 @@ Query 10 last data _JSON Format_
 ```http
 http://localhost/listajson
 ```
+Flush data *Slow mode*
+```http
+http://localhost/flush
+```
 Shutdown
 ```http
-http://localhost/nuevo/101
+http://localhost/nuevo/404
 ```
 
 
