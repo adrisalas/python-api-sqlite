@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template
+from time import sleep
 import sqlite3 as sqlite
 import requests
 import sys
@@ -8,7 +9,8 @@ app = Flask(__name__)
 
 default_api_info = """<h1>API - Temperatures</h1>
     <p><strong>GET /nuevo/:data</strong> to add new data</p>
-    <p><strong>GET /nuevo/101</strong> to close the server</p>
+    <p><strong>GET /nuevo/404</strong> to close the server</p>
+    <p><strong>GET /flush</strong> to clean data</p>
     <p><strong>GET /listar</strong> to get all the temperature data</p>
     <p><strong>GET /grafica</strong> to get the graph</p>
     <p><strong>GET /listajson</strong> to get the last 10 temperature data</p>
@@ -33,7 +35,29 @@ def home():
 @app.errorhandler(404)
 def page_not_found(e):
     return default_api_info
+
+# A route to flush data
+@app.route('/flush', methods=['GET'])
+def api_flush():
+    conn = sqlite.connect('../data/adrisalas.db')
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
     
+    sql = "DELETE FROM temperatures;"
+    cur.execute(sql)
+    conn.commit()
+
+    for i in range(10):
+        sql = "INSERT INTO temperatures ('data') VALUES (0);"
+        cur.execute(sql)
+        conn.commit()
+        sleep(1)
+    
+
+    return """<h1>API - Temperatures</h1>
+        <p>Data flushed</p>
+        """
+
 # A route to get all the temperature data
 @app.route('/listar', methods=['GET'])
 def api_list():
@@ -66,7 +90,7 @@ def api_new(data):
         <p>INCORRECT DATA</p>
         """
     
-    if (data==101):
+    if (data==404):
         shutdown_server()
         return """<h1>API - Temperatures</h1>
             <p>Server Down</p>
