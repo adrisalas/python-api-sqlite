@@ -8,7 +8,7 @@ Simple project to serve as a basis for creating APIs in Python using Flask and S
 
 ##### Option 1: Default
 ```bash
-git clone https://github.com/adrisalas/python-sqlite-api.git
+git clone https://github.com/adrisalas/python-api-sqlite.git
 cd ./api/
 pip install Flask
 pip install sqlite
@@ -18,7 +18,7 @@ python app.py
 ##### Option 2: In a Docker container
 ```bash
 git clone https://github.com/adrisalas/python-sqlite-api.git
-docker build -t pythonapi
+docker build -t python-api-sqlite
 docker run -p 4000:80 python-api-sqlite
 ```
 
